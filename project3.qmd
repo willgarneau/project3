@@ -5,8 +5,8 @@ description: "Exploring album sales and sentiment of lyrics from Beyoncé and Ta
 project:
   type: website
   output-dir: _site
-
 ---
+
 ```{r, eval=FALSE,message=FALSE, echo = FALSE}
 b_lyrics <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/beyonce_lyrics.csv")
 ts_lyrics <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/taylor_swift_lyrics.csv")
@@ -69,7 +69,6 @@ sales <- sales %>% mutate(released = mdy(released))
 
 ```
 
-
 2.  Use `forcats` to create a factor called `country` (**Note**: you may need to collapse some factor levels).
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -78,7 +77,6 @@ sales$country <- fct_collapse(sales$country,
                                uk = c("UK"),
                                world = c("WW", "World"))
 ```
-
 
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 sales$country <- factor(sales$country, 
@@ -95,15 +93,11 @@ sales <- sales %>% mutate(sales = sales / 1000000)
 
 ```
 
-
 4.  Keep only album sales from the UK, the US or the World.
-
 
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 sales<-sales[!is.na(sales$country),]
 ```
-
-
 
 5.  Auto print your final wrangled tibble data frame.
 
@@ -121,8 +115,6 @@ In this section, we will do some more data wrangling followed by summarization u
 sales_us<-sales
 ```
 
-
-
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 sales_us$country <- factor(sales_us$country, 
                          levels = setdiff(levels(sales_us$country), 
@@ -131,15 +123,12 @@ sales_us$country <- fct_drop(sales_us$country)
 sales_us<-sales_us[!is.na(sales_us$country),]
 ```
 
-
 2.  Create a new column called `years_since_release` corresponding to the number of years since the release of each album from Beyoncé and Taylor Swift. This should be a whole number and you should round down to "14" if you get a non-whole number like "14.12" years. (**Hint**: you may find the `interval()` function from `lubridate` helpful here, but this not the only way to do this.)
-
 
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 sales_us <- sales_us %>% 
   mutate(years_since_release = round(time_length(interval(released, today()), unit = "years")))
 ```
-
 
 3.  Calculate the most recent, oldest, and the median years since albums were released for both Beyoncé and Taylor Swift.
 
@@ -152,7 +141,6 @@ result <- sales_us %>%
 print(result)
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 print("Beyoncé album, oldest US release (years)")
 result <- sales_us %>%
@@ -161,7 +149,6 @@ result <- sales_us %>%
 print(result)
 
 ```
-
 
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 print("Beyoncé albums, Median age US release (years)")
@@ -172,7 +159,6 @@ print(result)
 
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 print("Taylor Swift album, most recent US release (years)")
 result <- sales_us %>%
@@ -182,7 +168,6 @@ result <- sales_us %>%
 print(result)
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 print("Taylor Swift album, oldest US release (years)")
 result <- sales_us %>%
@@ -191,7 +176,6 @@ result <- sales_us %>%
 print(result)
 
 ```
-
 
 ```{r, eval=TRUE, message=FALSE, echo = TRUE}
 print("Taylor Swift albums, Median age US release (years)")
@@ -207,7 +191,6 @@ Using the wrangled data from Part 1A:
 
 1.  Calculate the total album sales for each artist and for each `country` (only sales from the UK, US, and World).
     1.  Note: assume that the World sales do not include the UK and US ones.
-    
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 print("Taylor Swift sales, by country (millions of albums sold)")
@@ -219,7 +202,6 @@ result <- sales %>%
 print(result)
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 print("Beyoncé sales, by country (millions of albums sold)")
 result <- sales %>%
@@ -230,11 +212,7 @@ result <- sales %>%
 print(result)
 ```
 
-    
 2.  Using the total album sales, create a [percent stacked barchart](https://r-graph-gallery.com/48-grouped-barplot-with-ggplot2) using `ggplot2` of the percentage of sales of studio albums (in millions) along the y-axis for the two artists along the x-axis colored by the `country`.
-
-
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 ggplot(sales, aes(fill=country, y=sales, x=artist)) + 
@@ -247,25 +225,17 @@ ggplot(sales, aes(fill=country, y=sales, x=artist)) +
   theme_minimal()
 ```
 
-
-
-
 ## Part 1D
 
 Using the wrangled data from Part 1A, use `ggplot2` to create a bar plot for the sales of studio albums (in millions) along the x-axis for each of the album titles along the y-axis.
 
 **Note**:
 
-
-
 -   You only need to consider the global World sales (you can ignore US and UK sales for this part). Hint: how would you abbreviate *WorldWide*?
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 sales_world<-sales
 ```
-
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 sales_world$country <- factor(sales_world$country, 
@@ -277,8 +247,8 @@ sales_world<-sales_world[!is.na(sales_world$country),]
 
 -   The title of the album must be clearly readable along the y-axis.
 
-
 -   Each bar should be colored by which artist made that album.
+
 -   The bars should be ordered from albums with the most sales (top) to the least sales (bottom) (**Note**: you must use functions from `forcats` for this step).
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -317,7 +287,6 @@ ggplot(sales) +
 
 ```
 
-
 # Part 2: Exploring sentiment of lyrics
 
 In Part 2, we will explore the lyrics in the `b_lyrics` and `ts_lyrics` datasets.
@@ -326,13 +295,11 @@ In Part 2, we will explore the lyrics in the `b_lyrics` and `ts_lyrics` datasets
 
 Using `ts_lyrics`, create a new column called `line` with one line containing the character string for each line of Taylor Swift's songs.
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 ts_lyrics_split <- ts_lyrics %>% 
   mutate(line = str_split(ts_lyrics$Lyrics, "\n")) %>%
   unnest(line)
 ```
-
 
 -   How many lines in Taylor Swift's lyrics contain the word "hello"? For full credit, show all the rows in `ts_lyrics` that have "hello" in the `line` column and report how many rows there are in total.
 
@@ -352,7 +319,6 @@ select(Artist, Album, Title,line)
 print(hello_lines_ts)
 ```
 
-
 -   How many lines in Taylor Swift's lyrics contain the word "goodbye"? For full credit, show all the rows in `ts_lyrics` that have "goodbye" in the `line` column and report how many rows there are in total.
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -371,13 +337,11 @@ select(Artist, Album, Title,line)
 print(goodbye_lines_ts)
 ```
 
-
 ## Part 2B
 
 Repeat the same analysis for `b_lyrics` as described in Part 2A.
 
 -   How many lines in Beyoncé's lyrics contain the word "hello"? For full credit, show all the rows in `b_lyrics` that have "hello" in the `line` column and report how many rows there are in total.
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 print("Number of times the word 'Hello' appears on a line-by-line basis in Beyoncé songs")
@@ -394,7 +358,6 @@ hello_lines_b <- b_lyrics %>%
 select(artist_name,song_name, line)
 print(hello_lines_b)
 ```
-
 
 -   How many lines in Beyoncé's lyrics contain the word "goodbye"? For full credit, show all the rows in `b_lyrics` that have "goodbye" in the `line` column and report how many rows there are in total.
 
@@ -414,8 +377,6 @@ select(artist_name,song_name, line)
 print(goodbye_lines_b)
 ```
 
-
-
 ## Part 2C
 
 Using the `b_lyrics` dataset,
@@ -431,14 +392,12 @@ if(!require(tidytext)){
 
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 b_df<-tibble(
     line = seq_along(b_lyrics$line),
     text = b_lyrics$line
 )
 ```
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 b_tokens <- 
@@ -453,13 +412,11 @@ head(b_tokens)
 
 2.  Remove the "stopwords".
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 b_no_stop <-
     b_tokens %>%
     anti_join(stop_words)
 ```
-
 
 3.  Calculate the total number for each word in the lyrics.
 
@@ -478,7 +435,6 @@ b_count <-
 
 5.  Sort the rows from most frequent to least frequent words.
 
-
 6.  Only keep the top 25 most frequent words.
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -487,10 +443,10 @@ b_count<-b_count %>%
 ```
 
 7.  Auto print the wrangled tibble data frame.
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 print(b_count)
 ```
-
 
 8.  Use `ggplot2` to create a bar plot with the top words on the y-axis and the frequency of each word on the x-axis. Color each bar by the sentiment of each word from the "bing" sentiment lexicon. Bars should be ordered from most frequent on the top to least frequent on the bottom of the plot.
 
@@ -507,7 +463,6 @@ b_count %>%
   theme_minimal()
 ```
 
-
 9.  Create a word cloud of the top 25 most frequent words.
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -516,7 +471,6 @@ if(!require(wordcloud)){
     library(wordcloud)
 }
 ```
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 if(!require(RColorBrewer)){
@@ -534,14 +488,12 @@ b_count %>%
 
 Repeat the same analysis as above in Part 2C, but for `ts_lyrics`.
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 ts_df<-tibble(
     line = seq_along(ts_lyrics$Lyrics),
     text = ts_lyrics$Lyrics
 )
 ```
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 ts_tokens <- 
@@ -556,13 +508,11 @@ head(ts_tokens)
 
 2.  Remove the "stopwords".
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 ts_no_stop <-
     ts_tokens %>%
     anti_join(stop_words)
 ```
-
 
 3.  Calculate the total number for each word in the lyrics.
 
@@ -581,7 +531,6 @@ ts_count <-
 
 5.  Sort the rows from most frequent to least frequent words.
 
-
 6.  Only keep the top 25 most frequent words.
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -590,10 +539,10 @@ ts_count<-ts_count %>%
 ```
 
 7.  Auto print the wrangled tibble data frame.
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 print(ts_count)
 ```
-
 
 8.  Use `ggplot2` to create a bar plot with the top words on the y-axis and the frequency of each word on the x-axis. Color each bar by the sentiment of each word from the "bing" sentiment lexicon. Bars should be ordered from most frequent on the top to least frequent on the bottom of the plot.
 
@@ -610,9 +559,7 @@ ts_count %>%
   theme_minimal()
 ```
 
-
 9.  Create a word cloud of the top 25 most frequent words.
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 ts_count %>%
@@ -636,12 +583,12 @@ if(!require(textdata)){
 }
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 split_data<-split(ts_lyrics_split,ts_lyrics_split$Album, drop =FALSE)
 ```
 
-*******************
+------------------------------------------------------------------------
+
 folklore
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -683,7 +630,8 @@ print("folklore's average sentiment score")
 print(folklore_score)
 ```
 
-*******************************
+------------------------------------------------------------------------
+
 Fearless
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -718,14 +666,15 @@ Fearless_count <-
   Fearless_count %>%
   inner_join(get_sentiments("afinn"))
 ```
-     
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 Fearless_score <- sum(Fearless_count$value * Fearless_count$n) / nrow(Fearless_count)
 print("Fearless's average sentiment score")
 print(Fearless_score)
 ```
 
-*******************************
+------------------------------------------------------------------------
+
 1989
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -760,15 +709,15 @@ nineteen_count <-
   nineteen_count %>%
   inner_join(get_sentiments("afinn"))
 ```
-     
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 nineteen_score <- sum(nineteen_count$value * nineteen_count$n) / nrow(nineteen_count)
 print("1989's average sentiment score")
 print(nineteen_score)
 ```
 
+------------------------------------------------------------------------
 
-****************
 Lover
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -798,20 +747,20 @@ Lover_count<-Lover_no_stop %>%
     count(word, sort = TRUE)
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 Lover_count <-
   Lover_count %>%
   inner_join(get_sentiments("afinn"))
 ```
-     
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 Lover_score <- sum(Lover_count$value * Lover_count$n) / nrow(Lover_count)
 print("Lover's average sentiment score")
 print(Lover_score)
 ```
 
-*********
+------------------------------------------------------------------------
+
 Red
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -836,26 +785,25 @@ Red_no_stop <-
     anti_join(stop_words)
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 Red_count<-Red_no_stop %>%
     count(word, sort = TRUE)
 ```
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 Red_count <-
   Red_count %>%
   inner_join(get_sentiments("afinn"))
 ```
-     
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 Red_score <- sum(Red_count$value * Red_count$n) / nrow(Red_count)
 print("Red's average sentiment score")
 print(Red_score)
 ```
 
-*************
+------------------------------------------------------------------------
+
 reputation
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -885,20 +833,20 @@ reputation_count<-reputation_no_stop %>%
     count(word, sort = TRUE)
 ```
 
-
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 reputation_count <-
   reputation_count %>%
   inner_join(get_sentiments("afinn"))
 ```
-     
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 reputation_score <- sum(reputation_count$value * reputation_count$n) / nrow(reputation_count)
 print("reputation's average sentiment score")
 print(reputation_score)
 ```
 
-**********
+------------------------------------------------------------------------
+
 Speak Now
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -933,14 +881,15 @@ speak_count <-
   speak_count %>%
   inner_join(get_sentiments("afinn"))
 ```
-     
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 speak_score <- sum(speak_count$value * speak_count$n) / nrow(speak_count)
 print("Speak Now's average sentiment score")
 print(speak_score)
 ```
 
-********
+------------------------------------------------------------------------
+
 Taylor Swift
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -975,7 +924,7 @@ taylor_count <-
   taylor_count %>%
   inner_join(get_sentiments("afinn"))
 ```
-     
+
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 taylor_score <- sum(taylor_count$value * taylor_count$n) / nrow(taylor_count)
 print("Taylor Swift's average sentiment score")
@@ -996,8 +945,6 @@ sentiment <- tibble(
 print(sentiment)
 ```
 
-
-
 7.  Join the wrangled data frame from Part 1A (album sales in millions) filtered down to US sales with the wrangled data frame from #6 above (average sentiment score for each album).
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
@@ -1006,9 +953,7 @@ sales_sentiment <-
     inner_join(sales_us)
 ```
 
-
 8.  Using `ggplot2`, create a scatter plot of the average sentiment score for each album (y-axis) and the album release data along the x-axis. Make the size of each point the album sales in millions.
-
 
 ```{r, eval=TRUE, message=FALSE, warning = FALSE, echo = TRUE}
 
@@ -1022,13 +967,65 @@ ggplot(sales_sentiment) +
 
 ```
 
-
 9.  Add a horizontal line at y-intercept=0.
 
 10. Write 2-3 sentences interpreting the plot answering the question "How has the sentiment of Taylor Swift's albums have changed over time?". Add a title, subtitle, and useful axis labels.
 
-The sales of Taylor Swift albums have decreased over time.  The sentiment in the lyrics as evaluated by sentiment analysis using AFINN shows a decreasing score.  Although these two patterns appear linked, there has been a movement to streaming music online which may account for much of the decreased album sales rather than the themes becoming increasingly sad.
+The sales of Taylor Swift albums have decreased over time. The sentiment in the lyrics as evaluated by sentiment analysis using AFINN shows a decreasing score. Although these two patterns appear linked, there has been a movement to streaming music online which may account for much of the decreased album sales rather than the themes becoming increasingly sad.
 
+------------------------------------------------------------------------
+
+Sources:
+
+https://www.openai.com/chatgpt
+
+https://www.stackoverflow.com
+
+https://www.rdocumentation.org
+
+https://www.rfortherestofus.com
+
+https://www.happygitwithr.com
+
+https://www.geeksforgeeks.org
+
+https://www.r-graph-gallery.com
+
+https://www.r-bloggers.com
+
+https://community.rstudio.com
+
+https://sparkbyexamples.com
+
+https://genius.com
+
+https://stringr.tidyverse.org
+
+https://ggplot2.tidyverse.org
+
+https://forcats.tidyverse.org
+
+https://www.datamentor.io
+
+https://www.cedricscherer.com
+
+https://dataquest.io
+
+https://www.digitalocean.com
+
+https://tibble.tidyverse.org
+
+https://www.listendata.com
+
+https://wwww.tutorialspoint.com
+
+https://lubridate.tidyverse.org
+
+https://www.threesl.com
+
+https://www.statology.org
+
+https://wwww.analyticsvidhya.com
 
 # R session information
 
